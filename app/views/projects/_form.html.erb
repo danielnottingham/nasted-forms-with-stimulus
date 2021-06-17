@@ -1,0 +1,45 @@
+<%= form_with(model: project) do |form| %>
+  <% if project.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
+
+      <ul>
+        <% project.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description %>
+  </div>
+
+  <h3>Tasks</h3>
+  <div data-controller='nested-form'>
+    <template data-nested-form-target="template">
+      <%= form.fields_for :tasks, Task.new, child_index: 'NEW_RECORD' do |task| %>
+        <%= render 'task_fields', form: task %>
+      <% end %>
+    </template>
+
+    <%= form.fields_for :tasks do |task| %>
+      <%= render 'task_fields', form: task %>
+    <% end %>
+
+    <div data-nested-form-target="links">
+      <%= link_to 'Add Task', '#', data: { action: "nested-form#add_association" } %>
+    </div>
+    <br>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
